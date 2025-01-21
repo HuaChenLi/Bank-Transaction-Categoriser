@@ -91,6 +91,7 @@ public class ClassifyDescriptionsPanel extends JPanel {
         JTextField mapTo = new JTextField();
         JButton createMapping = new JButton("Create Mapping");
         JButton findExistingMapping = new JButton("Find Existing Mapping");
+        JButton categoriseWithNoMapping = new JButton("Categorise with no mapping");
 
         GhostText ghostText0 = new GhostText(mapFrom, "Please Enter Map From Value");
         GhostText ghostText1 = new GhostText(mapTo, "Please Enter Map To Value");
@@ -106,6 +107,10 @@ public class ClassifyDescriptionsPanel extends JPanel {
             if ((selection == -1 || selection == 0) && panel.getSelectedDescription() != null) {
                 mapTo.setText(panel.getSelectedDescription());
             }
+        });
+
+        categoriseWithNoMapping.addActionListener(e -> {
+            handleCategories(t.getDescription(), t.getDescription(), t);
         });
 
         JPanel p1 = new JPanel();
@@ -142,6 +147,7 @@ public class ClassifyDescriptionsPanel extends JPanel {
         panel.add(mapTo);
         panel.add(createMapping);
         panel.add(findExistingMapping);
+        panel.add(categoriseWithNoMapping);
 
         innerPanel.add(panel);
         innerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -223,37 +229,40 @@ public class ClassifyDescriptionsPanel extends JPanel {
             mapTo.setText("");
             refresh();
 
-            CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
+            handleCategories(mapFromValue, mapToValue, t);
+        }
+    }
 
-            if (!categoryColumnSQLs.isDescriptionAlreadyMapped(mapToValue, AuditAccountClass.getAuditID(), t.isIncome())) {
+    private void handleCategories(String mapFromValue, String mapToValue, Transaction t) {
+        CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
+        if (!categoryColumnSQLs.isDescriptionAlreadyMapped(mapToValue, AuditAccountClass.getAuditID(), t.isIncome())) {
 
-                int reply = JOptionPane.showConfirmDialog(null, "Would you like to categorise Description", null, JOptionPane.YES_NO_OPTION);
+            int reply = JOptionPane.showConfirmDialog(null, "Would you like to categorise Description", null, JOptionPane.YES_NO_OPTION);
 
-                if (reply == JOptionPane.YES_NO_OPTION) {
-                    FindExistingCategoryPanel panel = new FindExistingCategoryPanel(t,  mapToValue);
-                    String title = t.isIncome() ? "Income Categories" : "Expense Categories";
-                    int selection = JOptionPane.showOptionDialog(null, panel, title, JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.PLAIN_MESSAGE, null, new String[]{"OK", "Cancel"},"OK");
+            if (reply == JOptionPane.YES_NO_OPTION) {
+                FindExistingCategoryPanel panel = new FindExistingCategoryPanel(t,  mapToValue);
+                String title = t.isIncome() ? "Income Categories" : "Expense Categories";
+                int selection = JOptionPane.showOptionDialog(null, panel, title, JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE, null, new String[]{"OK", "Cancel"},"OK");
 
-                    if ((selection == -1 || selection == 0) && panel.getSelectedCategory() != null) {
+                if ((selection == -1 || selection == 0) && panel.getSelectedCategory() != null) {
 //                    This parts a bit messy and repeats itself
-                        int descriptionID = categoryColumnSQLs.getDescriptionID(mapFromValue, AuditAccountClass.getAuditID(), t.isIncome());
-                        if (descriptionID < 0) {
-                            categoryColumnSQLs.createCategory(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
-                            descriptionID = categoryColumnSQLs.getDescriptionID(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
-                        }
+                    int descriptionID = categoryColumnSQLs.getDescriptionID(mapFromValue, AuditAccountClass.getAuditID(), t.isIncome());
+                    if (descriptionID < 0) {
+                        categoryColumnSQLs.createCategory(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
+                        descriptionID = categoryColumnSQLs.getDescriptionID(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
+                    }
 
-                        if (descriptionID >= 0) {
-                            categoryColumnSQLs.insertExcelColumnSelection(panel.getCategoryID(), descriptionID);
-                        } else {
+                    if (descriptionID >= 0) {
+                        categoryColumnSQLs.insertExcelColumnSelection(panel.getCategoryID(), descriptionID);
+                    } else {
 //                            Shouldn't hit here, but you never know
-                            AlertMessage.errorBox("Could not categorise description", "Warning");
-                        }
+                        AlertMessage.errorBox("Could not categorise description", "Warning");
                     }
                 }
-
-                AlertMessage.infoBox("Mapping Created", "Mapping Information");
             }
+
+            AlertMessage.infoBox("Mapping Created", "Mapping Information");
         }
     }
 }
