@@ -11,6 +11,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -110,6 +111,10 @@ public class ClassifyDescriptionsPanel extends JPanel {
         });
 
         categoriseWithNoMapping.addActionListener(e -> {
+            System.out.println(t.getDescription());
+            char incomeExpenseChar = t.isIncome() ? 'I' : 'E';
+            mappingTableSQLs.insertMapping(t.getDescription(), t.getDescription(), AuditAccountClass.getAuditID(), incomeExpenseChar);
+            refresh();
             handleCategories(t.getDescription(), t.getDescription(), t);
         });
 
