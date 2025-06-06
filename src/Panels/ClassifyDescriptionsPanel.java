@@ -90,11 +90,11 @@ public class ClassifyDescriptionsPanel extends JPanel {
         JTextField mapFrom = new JTextField();
         JTextField mapTo = new JTextField();
         JButton createMapping = new JButton("Create Mapping");
-        JButton findExistingMapping = new JButton("Find Existing Mapping");
+        JButton findExistingMapping = new JButton("Map to Existing Description");
         JButton categoriseWithNoMapping = new JButton("Categorise with no mapping");
 
-        GhostText ghostText0 = new GhostText(mapFrom, "Please Enter Map From Value");
-        GhostText ghostText1 = new GhostText(mapTo, "Please Enter Map To Value");
+        GhostText ghostText0 = new GhostText(mapFrom, "Enter the Matching Text that we will map from");
+        GhostText ghostText1 = new GhostText(mapTo, "Please Enter the Description that we will map to");
 
         createMapping.addActionListener(new CreateMappingActionListener(t, mapFrom, mapTo));
 
@@ -242,12 +242,12 @@ public class ClassifyDescriptionsPanel extends JPanel {
         if (!categoryColumnSQLs.isDescriptionAlreadyMapped(mapToValue, AuditAccountClass.getAuditID(), t.isIncome())) {
 
             int reply = JOptionPane.showConfirmDialog(null, "Would you like to categorise Description", null, JOptionPane.YES_NO_OPTION);
+            if (reply != JOptionPane.YES_OPTION) { return; }
 
-            if (reply == JOptionPane.YES_NO_OPTION) {
-                FindExistingCategoryPanel panel = new FindExistingCategoryPanel(t,  mapToValue);
-                String title = t.isIncome() ? "Income Categories" : "Expense Categories";
-                int selection = JOptionPane.showOptionDialog(null, panel, title, JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.PLAIN_MESSAGE, null, new String[]{"OK", "Cancel"},"OK");
+            FindExistingCategoryPanel panel = new FindExistingCategoryPanel(t,  mapToValue);
+            String title = t.isIncome() ? "Income Categories" : "Expense Categories";
+            int selection = JOptionPane.showOptionDialog(null, panel, title, JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null, new String[]{"OK", "Cancel"},"OK");
 
                 if ((selection == -1 || selection == 0) && panel.getSelectedCategory() != null) {
 //                    This parts a bit messy and repeats itself
@@ -257,16 +257,16 @@ public class ClassifyDescriptionsPanel extends JPanel {
                         descriptionID = categoryColumnSQLs.getDescriptionID(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
                     }
 
-                    if (descriptionID >= 0) {
-                        categoryColumnSQLs.categoriseDescription(panel.getCategoryID(), descriptionID);
-                    } else {
-//                            Shouldn't hit here, but you never know
-                        AlertMessage.errorBox("Could not categorise description", "Warning");
-                    }
+                if (descriptionID >= 0) {
+                    categoryColumnSQLs.categoriseDescription(panel.getCategoryID(), descriptionID);
+                } else {
+//                    Shouldn't hit here, but you never know
+                    AlertMessage.errorBox("Could not categorise description", "Warning");
                 }
             }
-
-            AlertMessage.infoBox("Mapping Created", "Mapping Information");
         }
+
+        AlertMessage.infoBox("Mapping Created", "Mapping Information");
     }
 }
+

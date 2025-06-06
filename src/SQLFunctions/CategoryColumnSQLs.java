@@ -357,4 +357,82 @@ public class CategoryColumnSQLs extends DatabaseConnection {
         return false;
 
     }
+
+    public void createCategoryAndMapDescription(int accountID, boolean isIncome, String category, String description, String mapFrom) {
+//        We don't want to double up on categories
+        int categoryID = findCategoryID(accountID, isIncome, category);
+        System.out.println((category));
+        System.out.println(categoryID);
+        if (categoryID == -1) {
+            createCategory(accountID, category, false, isIncome, !isIncome);
+            categoryID = findCategoryID(accountID, isIncome, category);
+        }
+
+        int descriptionID = findDescriptionID(accountID, isIncome, description);
+        if (descriptionID == -1) {
+            createDescription(description, accountID, isIncome);
+            descriptionID = findDescriptionID(accountID, isIncome, description);
+        }
+        categoriseDescription(categoryID, descriptionID);
+
+        char incomeExpense = isIncome ? 'I' : 'E';
+        MappingTableSQLs m = new MappingTableSQLs();
+        m.insertMapping(mapFrom, description, accountID, incomeExpense);
+    }
+
+    public int findCategoryID(int accountID, boolean isIncome, String category) {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement selectDescriptionID = connection.prepareStatement(
+                    "SELECT id FROM excel_columns " +
+                            "WHERE audit_id = ? " +
+                            "AND is_income = ?" +
+                            "AND column_name = ? " +
+                            "ORDER BY id DESC LIMIT 1 "
+            );
+            selectDescriptionID.setInt(1, accountID);
+            selectDescriptionID.setBoolean(2, isIncome);
+            selectDescriptionID.setString(3, category);
+
+            ResultSet rs = selectDescriptionID.executeQuery();
+
+            int id = -1;
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            connection.close();
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int findDescriptionID(int accountID, boolean isIncome, String description) {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement selectDescriptionID = connection.prepareStatement(
+                    "SELECT id FROM excel_category_mapping " +
+                            "WHERE account_id = ? " +
+                            "AND is_income = ?" +
+                            "AND category_values = ? " +
+                            "ORDER BY id DESC LIMIT 1 "
+            );
+            selectDescriptionID.setInt(1, accountID);
+            selectDescriptionID.setBoolean(2, isIncome);
+            selectDescriptionID.setString(3, description);
+
+            ResultSet rs = selectDescriptionID.executeQuery();
+
+            int id = -1;
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            connection.close();
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }

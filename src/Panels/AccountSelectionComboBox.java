@@ -32,6 +32,7 @@ public class AccountSelectionComboBox extends JComboBox {
                 AuditAccountClass.setAuditID(auditIDSQLs.getStartingAuditNumber());
                 Globals.Account_ID = auditIDSQLs.getStartingAuditNumber();
                 Globals.Account_Name = AuditAccountClass.getAccountName();
+                AuditAccountClass.setAuditID(Globals.Account_ID);
 
             } else {
                 AuditAccountClass.setAuditID(auditAccountID.id);

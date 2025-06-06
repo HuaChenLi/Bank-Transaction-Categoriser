@@ -2,6 +2,7 @@ package src.Panels;
 
 import src.Lib.CategoryModel;
 import src.Lib.Transaction;
+import src.SQLFunctions.CategoryColumnSQLs;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,21 @@ public class FindExistingCategoryPanel extends JPanel {
 
         JLabel dateLabel = new JLabel(t.getDate() + "      ");
         JLabel mapToLabel = new JLabel(mapTo);
+
+        JTextField newCategoryName = new JTextField();
+        newCategoryName.setColumns(20);
+        JButton mapToNewCategory = new JButton("Map to New Category");
+        mapToNewCategory.addActionListener(e -> {
+            String text = newCategoryName.getText();
+
+            if (newCategoryName.getText().trim().length() >= 1) {
+                CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
+                categoryColumnSQLs.createCategoryAndMapDescription(AuditAccountClass.getAuditID(), t.isIncome(), text, mapTo, t.getDescription());
+            }
+
+            Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+            activeWindow.dispose();
+        });
 
         categoryTable = new JTable();
         categoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -42,8 +58,13 @@ public class FindExistingCategoryPanel extends JPanel {
         transactionPanel.add(dateLabel);
         transactionPanel.add(mapToLabel);
 
+        JPanel newCategoryPanel = new JPanel();
+        newCategoryPanel.add(newCategoryName);
+        newCategoryPanel.add(mapToNewCategory);
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(transactionPanel);
+        this.add(newCategoryPanel);
         this.add(categoryScroll, BorderLayout.CENTER);
         this.setVisible(true);
     }
