@@ -88,7 +88,7 @@ public class CategoryColumnSQLs extends DatabaseConnection {
         System.out.println("Created Excel Column Table successfully");
     }
 
-    public void createCategory(String s, int accountID, boolean isIncome) {
+    public void createDescription(String s, int accountID, boolean isIncome) {
         try {
             DatabaseConnection Connection = new DatabaseConnection();
             java.sql.Connection connection = Connection.getConnection();

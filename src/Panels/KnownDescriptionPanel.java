@@ -33,7 +33,7 @@ public class KnownDescriptionPanel extends JPanel {
     private void createDescription(String category) {
         if (category.trim().length() != 0) {
             CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
-            categoryColumnSQLs.createCategory(category, AuditAccountClass.getAuditID(), AuditAccountClass.isIncome());
+            categoryColumnSQLs.createDescription(category, AuditAccountClass.getAuditID(), AuditAccountClass.isIncome());
             excelColumnViewPanel.refreshAll();
             newDescription.setText("");
         }

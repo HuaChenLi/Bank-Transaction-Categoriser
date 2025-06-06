@@ -253,7 +253,7 @@ public class ClassifyDescriptionsPanel extends JPanel {
 //                    This parts a bit messy and repeats itself
                     int descriptionID = categoryColumnSQLs.getDescriptionID(mapFromValue, AuditAccountClass.getAuditID(), t.isIncome());
                     if (descriptionID < 0) {
-                        categoryColumnSQLs.createCategory(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
+                        categoryColumnSQLs.createDescription(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
                         descriptionID = categoryColumnSQLs.getDescriptionID(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
                     }
 
