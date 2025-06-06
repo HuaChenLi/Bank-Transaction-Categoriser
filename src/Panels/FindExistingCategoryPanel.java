@@ -7,12 +7,20 @@ import src.SQLFunctions.CategoryColumnSQLs;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
 public class FindExistingCategoryPanel extends JPanel {
     private int categoryID;
     private String selectedCategory;
+    private final JTextField newCategoryField = new JTextField();
+    private final Transaction t;
+    private final String mapTo;
     public FindExistingCategoryPanel(Transaction t, String mapTo) {
+        this.t = t;
+        this.mapTo = mapTo;
+
         JTable categoryTable;
         JScrollPane categoryScroll;
         DefaultTableModel categoryModel;
@@ -20,20 +28,12 @@ public class FindExistingCategoryPanel extends JPanel {
         JLabel dateLabel = new JLabel(t.getDate() + "      ");
         JLabel mapToLabel = new JLabel(mapTo);
 
-        JTextField newCategoryName = new JTextField();
-        newCategoryName.setColumns(20);
+        newCategoryField.setColumns(20);
         JButton mapToNewCategory = new JButton("Map to New Category");
         mapToNewCategory.addActionListener(e -> {
-            String text = newCategoryName.getText();
-
-            if (newCategoryName.getText().trim().length() >= 1) {
-                CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
-                categoryColumnSQLs.createCategoryAndMapDescription(AuditAccountClass.getAuditID(), t.isIncome(), text, mapTo, t.getDescription());
-            }
-
-            Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
-            activeWindow.dispose();
+            acceptNewCategory();
         });
+        newCategoryField.addKeyListener(new EnterKeyListener());
 
         categoryTable = new JTable();
         categoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -59,7 +59,7 @@ public class FindExistingCategoryPanel extends JPanel {
         transactionPanel.add(mapToLabel);
 
         JPanel newCategoryPanel = new JPanel();
-        newCategoryPanel.add(newCategoryName);
+        newCategoryPanel.add(newCategoryField);
         newCategoryPanel.add(mapToNewCategory);
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -82,6 +82,19 @@ public class FindExistingCategoryPanel extends JPanel {
 
     public void setSelectedCategory(String selectedCategory) {
         this.selectedCategory = selectedCategory;
+    }
+
+    public void acceptNewCategory() {
+        String newCategoryName = newCategoryField.getText();
+
+        if (newCategoryField.getText().trim().length() >= 1) {
+            CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
+            categoryColumnSQLs.createCategoryAndMapDescription(AuditAccountClass.getAuditID(), t.isIncome(), newCategoryName, mapTo, t.getDescription());
+
+            Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+            activeWindow.dispose();
+        }
+
     }
 
     public class MouseListener implements java.awt.event.MouseListener {
@@ -126,6 +139,26 @@ public class FindExistingCategoryPanel extends JPanel {
 
         @Override
         public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+    private class EnterKeyListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                acceptNewCategory();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
 
         }
     }
