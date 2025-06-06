@@ -119,7 +119,9 @@ public class CategoryColumnSQLs extends DatabaseConnection {
             e.printStackTrace();
         }
     }
-    public void insertColumn(int auditID, String columnName, boolean gSTIncluded, boolean isIncome, boolean isExpense) {
+
+//    The category is a column in the Excel spreadsheet
+    public void createCategory(int auditID, String columnName, boolean gSTIncluded, boolean isIncome, boolean isExpense) {
         Statement statement;
         if (isIncome) {
             try {

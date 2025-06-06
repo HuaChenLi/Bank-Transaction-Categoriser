@@ -61,7 +61,7 @@ public class CreateCategoryPanel extends JPanel {
     private void createExcelColumn() {
         CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
         if (columnNameText.getText().trim().length() >= 1) {
-            categoryColumnSQLs.insertColumn(AuditAccountClass.getAuditID(), columnNameText.getText(), gSTIncluded, AuditAccountClass.isIncome(), AuditAccountClass.isExpense());
+            categoryColumnSQLs.createCategory(AuditAccountClass.getAuditID(), columnNameText.getText(), gSTIncluded, AuditAccountClass.isIncome(), AuditAccountClass.isExpense());
         }
         columnNameText.setText("");
 
