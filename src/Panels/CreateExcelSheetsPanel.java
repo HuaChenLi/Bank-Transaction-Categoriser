@@ -11,12 +11,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static src.Panels.FinancialYearPanel.financialYearValue;
+import static src.Globals.Financial_Year;
+import static src.Globals.Account_ID;
+import static src.Globals.Account_Name;
 
 public class CreateExcelSheetsPanel extends JPanel {
     JButton createExcelSheets;
@@ -25,7 +28,7 @@ public class CreateExcelSheetsPanel extends JPanel {
     ArrayList<File> csvFiles = new ArrayList<>();
     Logging logging = new Logging("create_sheets.log");
     ArrayList<Transaction> transactions = new ArrayList<>();
-    public CreateExcelSheetsPanel(int accountID, String accountName) {
+    public CreateExcelSheetsPanel() {
         this.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         createExcelSheets = new JButton("Create New Excel Sheets");
@@ -33,7 +36,7 @@ public class CreateExcelSheetsPanel extends JPanel {
 
         createExcelSheets.addActionListener(e1 -> {
             try {
-                createExcelSheetsFunction(accountID, accountName);
+                createExcelSheetsFunction();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -73,7 +76,7 @@ public class CreateExcelSheetsPanel extends JPanel {
         this.add(mappingPopupButton);
     }
 
-    public void createExcelSheetsFunction(int accountID, String accountName) throws IOException {
+    public void createExcelSheetsFunction() throws IOException {
         JOptionPane jop = new JOptionPane();
         jop.setMessageType(JOptionPane.INFORMATION_MESSAGE);
         jop.setMessage("Creating Excel File");
@@ -84,7 +87,7 @@ public class CreateExcelSheetsPanel extends JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 isErrorLinesExists = false;
-                ProcessBuilder pb = new ProcessBuilder("python","Business Audit\\create_folder_structure.py", String.valueOf(financialYearValue), String.valueOf(accountID), accountName);
+                ProcessBuilder pb = new ProcessBuilder("python","Business Audit\\create_folder_structure.py", String.valueOf(Financial_Year), String.valueOf(Account_ID), Account_Name);
                 Process process = pb.start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -95,6 +98,8 @@ public class CreateExcelSheetsPanel extends JPanel {
 
                 while ((lines=errorReader.readLine())!=null) {
                     isErrorLinesExists = true;
+                    Logging l = new Logging("error.log");
+                    l.writeLog("Error lines " + lines);
                     System.out.println("Error lines " + lines);
                 }
 
@@ -140,7 +145,7 @@ public class CreateExcelSheetsPanel extends JPanel {
                     pb = new ProcessBuilder("python", "Business Audit\\create_income_expense_csv.py",
                             String.valueOf(AuditAccountClass.getAuditID()),
                             String.valueOf(AuditAccountClass.getAccountName()),
-                            String.valueOf(financialYearValue),
+                            String.valueOf(Financial_Year),
                             arg);
                     process = pb.start();
                     reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -152,6 +157,8 @@ public class CreateExcelSheetsPanel extends JPanel {
 
                     isErrorLinesExists = false;
                     while ((lines = errorReader.readLine()) != null) {
+                        Logging l = new Logging("error.log");
+                        l.writeLog("Error lines " + lines);
                         System.out.println("Error lines " + lines);
                         isErrorLinesExists = true;
                     }

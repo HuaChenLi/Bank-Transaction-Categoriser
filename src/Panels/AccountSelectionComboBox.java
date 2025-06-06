@@ -1,5 +1,6 @@
 package src.Panels;
 
+import src.Globals;
 import src.SQLFunctions.AuditIDSQLs;
 
 import javax.swing.*;
@@ -29,11 +30,20 @@ public class AccountSelectionComboBox extends JComboBox {
             AuditAccountID auditAccountID = (AuditAccountID) this.getSelectedItem();
             if (auditAccountID == null) {
                 AuditAccountClass.setAuditID(auditIDSQLs.getStartingAuditNumber());
+                Globals.Account_ID = auditIDSQLs.getStartingAuditNumber();
+                Globals.Account_Name = AuditAccountClass.getAccountName();
+
             } else {
                 AuditAccountClass.setAuditID(auditAccountID.id);
             }
             excelColumnViewPanel.refreshAll();
             mappingPanel.refreshMappingTable();
+        });
+
+        this.addActionListener(e -> {
+            AuditAccountID a = (AuditAccountID) this.getSelectedItem();
+            Globals.Account_ID = a.getId();
+            Globals.Account_Name = a.getDescription();
         });
     }
 }

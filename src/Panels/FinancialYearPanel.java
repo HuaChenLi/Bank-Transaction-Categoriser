@@ -1,19 +1,20 @@
 package src.Panels;
 
+import src.Globals;
+
 import javax.swing.*;
 import java.time.Year;
 
 public class FinancialYearPanel extends JPanel {
     JLabel financialYearLabel;
     YearComboBox yearComboBox;
-    static int financialYearValue;
     public FinancialYearPanel() {
         financialYearLabel = new JLabel("Year");
         yearComboBox = new YearComboBox();
         int year = Year.now().getValue();
 
         yearComboBox.setSelectedItem(year);
-        financialYearValue = year;
+        Globals.Financial_Year = year;
 
         this.add(financialYearLabel);
         this.add(yearComboBox);
@@ -26,7 +27,7 @@ public class FinancialYearPanel extends JPanel {
             }
 
             this.addActionListener(e -> {
-                financialYearValue = (int) this.getSelectedItem();
+                Globals.Financial_Year = (int) this.getSelectedItem();
             });
         }
     }

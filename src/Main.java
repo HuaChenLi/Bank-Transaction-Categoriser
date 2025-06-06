@@ -57,7 +57,7 @@ public class Main {
         mainPanel.add(financialYearPanel);
 
 //        Create Excel Spreadsheets Panel
-        CreateExcelSheetsPanel createExcelSpreadsheetsPanel = new CreateExcelSheetsPanel(AuditAccountClass.getAuditID(), AuditAccountClass.getAccountName());
+        CreateExcelSheetsPanel createExcelSpreadsheetsPanel = new CreateExcelSheetsPanel();
         mainPanel.add(createExcelSpreadsheetsPanel);
 
 //        Income Expense Indicator Panel
