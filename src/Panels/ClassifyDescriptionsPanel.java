@@ -17,13 +17,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClassifyDescriptionsPanel extends JPanel {
+    JFrame jFrame;
     JScrollPane scrollPane;
     JPanel innerPanel;
     MappingTableSQLs mappingTableSQLs = new MappingTableSQLs();
     Border border = BorderFactory.createLineBorder(Color.decode("#3037ff"));
     ArrayList<Transaction> transactions;
-    public void addPanels(ArrayList<Transaction> transactions) {
+    public ClassifyDescriptionsPanel(JFrame jFrame, ArrayList<Transaction> transactions) {
+        this.jFrame = jFrame;
         this.transactions = transactions;
+
         innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
 
@@ -246,24 +249,11 @@ public class ClassifyDescriptionsPanel extends JPanel {
 
             FindExistingCategoryPanel panel = new FindExistingCategoryPanel(t,  mapToValue);
             String title = t.isIncome() ? "Income Categories" : "Expense Categories";
-            int selection = JOptionPane.showOptionDialog(null, panel, title, JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.PLAIN_MESSAGE, null, new String[]{"OK", "Cancel"},"OK");
-
-                if ((selection == -1 || selection == 0) && panel.getSelectedCategory() != null) {
-//                    This parts a bit messy and repeats itself
-                    int descriptionID = categoryColumnSQLs.getDescriptionID(mapFromValue, AuditAccountClass.getAuditID(), t.isIncome());
-                    if (descriptionID < 0) {
-                        categoryColumnSQLs.createDescription(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
-                        descriptionID = categoryColumnSQLs.getDescriptionID(mapToValue, AuditAccountClass.getAuditID(), t.isIncome());
-                    }
-
-                if (descriptionID >= 0) {
-                    categoryColumnSQLs.categoriseDescription(panel.getCategoryID(), descriptionID);
-                } else {
-//                    Shouldn't hit here, but you never know
-                    AlertMessage.errorBox("Could not categorise description", "Warning");
-                }
-            }
+            JDialog jd = new JDialog(jFrame, Dialog.ModalityType.APPLICATION_MODAL);
+            jd.add(panel, BorderLayout.CENTER);
+            jd.setTitle(title);
+            jd.pack();
+            jd.setVisible(true);
         }
 
         AlertMessage.infoBox("Mapping Created", "Mapping Information");

@@ -45,8 +45,7 @@ public class ClassifyDescriptionsFrame extends JFrame {
             }
         }
 
-        ClassifyDescriptionsPanel classifyDescriptionsPanel = new ClassifyDescriptionsPanel();
-        classifyDescriptionsPanel.addPanels(transactions);
+        ClassifyDescriptionsPanel classifyDescriptionsPanel = new ClassifyDescriptionsPanel(this, transactions);
 
         this.add(classifyDescriptionsPanel, BorderLayout.CENTER);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
