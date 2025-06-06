@@ -1,5 +1,6 @@
 package src.Panels;
 
+import src.Gui;
 import src.Lib.AlertMessage;
 import src.Lib.Logging;
 import src.Lib.Transaction;
@@ -10,6 +11,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
@@ -219,6 +222,13 @@ public class CreateExcelSheetsPanel extends JPanel {
         newFrame = new JFrame();
         newFrame.add(classifyDescriptionsPanel, BorderLayout.CENTER);
         newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        newFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                // call terminate
+                Gui.refresh();
+            }
+        });
+
         newFrame.setTitle("Mapping Organisation");
         newFrame.pack();
         newFrame.setVisible(true);

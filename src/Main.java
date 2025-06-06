@@ -52,6 +52,7 @@ public class Main {
         TitlePanel titlePanel = new TitlePanel();
         mainPanel.add(titlePanel);
 
+
 //        Financial Year Panel
         FinancialYearPanel financialYearPanel = new FinancialYearPanel();
         mainPanel.add(financialYearPanel);
@@ -84,8 +85,10 @@ public class Main {
         knownDescriptionPanel.setCategoriseValuesPanel(categoriseValuesPanel);
         mainPanel.add(categoriseValuesPanel);
 
-//        excelColumnViewPanel.refreshAll();
         mainPanel.add(excelColumnViewPanel);
+
+        Gui.setMappingPanel(mappingPanel);
+        Gui.setExcelColumnViewPanel(excelColumnViewPanel);
 
 //        Setting the GUI Frame
         frame = new JFrame();
