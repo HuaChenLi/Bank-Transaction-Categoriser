@@ -27,7 +27,7 @@ public class CategoriseValuesPanel extends JPanel {
             columnIDText.setText("");
 
             CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
-            categoryColumnSQLs.insertExcelColumnSelection(categoryID, descriptionID);
+            categoryColumnSQLs.categoriseDescription(categoryID, descriptionID);
         });
 
         this.add(categoryValueLabel);

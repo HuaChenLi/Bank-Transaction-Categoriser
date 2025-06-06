@@ -181,7 +181,7 @@ public class CategoryColumnSQLs extends DatabaseConnection {
         System.out.println("Created Excel Column Table successfully");
     }
 
-    public void insertExcelColumnSelection(int excelColumnID, int excelCategoryMappingID) {
+    public void categoriseDescription(int excelColumnID, int excelCategoryMappingID) {
         try {
             DatabaseConnection Connection = new DatabaseConnection();
             java.sql.Connection connection = Connection.getConnection();

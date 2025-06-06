@@ -258,7 +258,7 @@ public class ClassifyDescriptionsPanel extends JPanel {
                     }
 
                     if (descriptionID >= 0) {
-                        categoryColumnSQLs.insertExcelColumnSelection(panel.getCategoryID(), descriptionID);
+                        categoryColumnSQLs.categoriseDescription(panel.getCategoryID(), descriptionID);
                     } else {
 //                            Shouldn't hit here, but you never know
                         AlertMessage.errorBox("Could not categorise description", "Warning");
