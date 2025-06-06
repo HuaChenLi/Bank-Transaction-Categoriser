@@ -254,7 +254,7 @@ public class CategoryColumnSQLs extends DatabaseConnection {
         }
     }
 
-    public ResultSet getCategories(int accountID, boolean isIncome) {
+    public ResultSet getDescriptions(int accountID, boolean isIncome) {
         try {
             DatabaseConnection Connection = new DatabaseConnection();
             Connection connection = Connection.getConnection();

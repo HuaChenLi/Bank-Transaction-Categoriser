@@ -12,7 +12,7 @@ public class DescData {
     private static final CategoryColumnSQLs categoryColumnSQLs = new CategoryColumnSQLs();
     public static DefaultTableModel getDescriptionDataModel(int accountID, boolean isIncome) throws SQLException {
         ResultSet excelColumns;
-        excelColumns = categoryColumnSQLs.getCategories(accountID, isIncome);
+        excelColumns = categoryColumnSQLs.getDescriptions(accountID, isIncome);
 
         return buildTableModel(excelColumns);
     }
