@@ -246,7 +246,7 @@ public class ClassifyDescriptionsPanel extends JPanel {
 
             FindExistingCategoryPanel panel = new FindExistingCategoryPanel(t,  mapToValue);
             String title = t.isIncome() ? "Income Categories" : "Expense Categories";
-            int selection = JOptionPane.showOptionDialog(null, panel, title, JOptionPane.OK_CANCEL_OPTION,
+            int selection = JOptionPane.showOptionDialog(null, panel, title, JOptionPane.DEFAULT_OPTION,
                     JOptionPane.PLAIN_MESSAGE, null, new String[]{"OK", "Cancel"},"OK");
 
                 if ((selection == -1 || selection == 0) && panel.getSelectedCategory() != null) {

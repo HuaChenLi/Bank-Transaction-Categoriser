@@ -1,9 +1,7 @@
 package src.Panels;
 
-import src.Gui;
 import src.Lib.AlertMessage;
 import src.Lib.Logging;
-import src.Lib.Transaction;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -11,14 +9,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
-import java.sql.SQLOutput;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static src.Globals.Financial_Year;
 import static src.Globals.Account_ID;
@@ -30,7 +22,6 @@ public class CreateExcelSheetsPanel extends JPanel {
     JPanel createCSVPanel;
     ArrayList<File> csvFiles = new ArrayList<>();
     Logging logging = new Logging("create_sheets.log");
-    ArrayList<Transaction> transactions = new ArrayList<>();
     public CreateExcelSheetsPanel() {
         this.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
@@ -189,49 +180,7 @@ public class CreateExcelSheetsPanel extends JPanel {
     }
 
     private void mappingPopup() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
-
-        transactions.clear();
-
-        for (File f : csvFiles) {
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader(f));
-                String line = reader.readLine();
-                while (line != null) {
-                    String[] splitted = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-                    line = reader.readLine();
-
-                    Transaction t = new Transaction();
-                    t.setDate(LocalDate.parse(splitted[0], formatter));
-                    t.setAmount(Double.parseDouble(splitted[1].replace("\"", "")));
-                    t.setDescription(splitted[2].replace("\"", ""));
-
-                    transactions.add(t);
-
-                }
-                reader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        ClassifyDescriptionsPanel classifyDescriptionsPanel = new ClassifyDescriptionsPanel();
-        classifyDescriptionsPanel.addPanels(transactions);
-
-        JFrame newFrame;
-        newFrame = new JFrame();
-        newFrame.add(classifyDescriptionsPanel, BorderLayout.CENTER);
-        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        newFrame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                // call terminate
-                Gui.refresh();
-            }
-        });
-
-        newFrame.setTitle("Mapping Organisation");
-        newFrame.pack();
-        newFrame.setVisible(true);
+        new ClassifyDescriptionsFrame(csvFiles);
     }
 
     public class FileSelector extends JPanel {
